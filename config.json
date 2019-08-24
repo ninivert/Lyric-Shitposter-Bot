@@ -2,7 +2,12 @@
 	"chats": {
 		"default": {
 			"threshold": 90,
-			"index": 0
+			"index": -1,
+			"uses": 0
+		},
+		"763391143": {
+			"index": 1,
+			"uses": 2
 		}
 	},
 	"ignored_regex": "(?u)[^\\w\\d]",

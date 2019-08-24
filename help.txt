@@ -1,0 +1,9 @@
+Responds to and with lyrics from given songs.
+
+Commands:
+/start - Starts the song from the beginning
+/next - Display the next lyric
+/stats - Display stats for this conversation, useful for debugging
+/help - Display this message
+
+Bugs and suggestions: @breadplusplus
