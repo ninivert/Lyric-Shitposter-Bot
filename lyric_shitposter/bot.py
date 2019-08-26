@@ -27,6 +27,7 @@ def bot():
 	next_handler = CommandHandler('next', cmd_next)
 	debug_handler = CommandHandler('debug', cmd_debug)
 	uses_handler = CommandHandler('uses', cmd_uses)
+	current_handler = CommandHandler('current', cmd_current)
 	songs_handler = CommandHandler('songs', cmd_songs)
 	songs_inline_handler = CallbackQueryHandler(cmd_songs_inline)
 	unknown_handler = MessageHandler(cmd_filter, cmd_unknown)
@@ -36,6 +37,7 @@ def bot():
 	dispatcher.add_handler(next_handler)
 	dispatcher.add_handler(debug_handler)
 	dispatcher.add_handler(uses_handler)
+	dispatcher.add_handler(current_handler)
 	dispatcher.add_handler(songs_handler)
 	dispatcher.add_handler(songs_inline_handler)
 	dispatcher.add_handler(unknown_handler)
@@ -147,6 +149,21 @@ def cmd_uses(update, context):
 		chat_id=update.message.chat_id,
 		reply_to_message_id=update.message.message_id,
 		text=f'I have replied {get_chat_var(update.message.chat_id, "uses")} times !',
+	)
+
+
+def cmd_current(update, context):
+	indexes = get_chat_var(update.message.chat_id, 'indexes')
+	text = 'Currently playing, in decreasing order of priority:'
+
+	for i in range(len(indexes)):
+		artist, title, index = indexes[i]
+		text += f'\n[{i+1}] {title} by {artist} (at pos {index})'
+
+	context.bot.send_message(
+		chat_id=update.message.chat_id,
+		reply_to_message_id=update.message.message_id,
+		text=text
 	)
 
 
