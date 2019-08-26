@@ -1,12 +1,15 @@
 import re
+import unicodedata
 from fuzzywuzzy import fuzz
 from .config import config
 
 
-def same(s1, s2, threshold):
-	s1 = s1.lower()
-	s2 = s2.lower()
-	s1 = re.sub(config['ignored_regex'], '', s1)
-	s2 = re.sub(config['ignored_regex'], '', s2)
+def normalize(s):
+	s = s.lower()
+	s = re.sub(config['ignored_regex'], '', s)
+	s = unicodedata.normalize('NFD', s).encode('ascii', 'ignore').decode('utf-8')
+	return s
 
-	return fuzz.ratio(s1, s2) > threshold
+
+def same(s1, s2, threshold):
+	return fuzz.ratio(normalize(s1), normalize(s2)) > threshold
