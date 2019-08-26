@@ -188,7 +188,7 @@ def cmd_songs_inline(update, context):
 	indexes = get_chat_var(chat_id, 'indexes')
 
 	if enabled:
-		for data_index in range(len(indexes)):
+		for data_index in reversed(range(len(indexes))):
 			_artist, _title, _index = indexes[data_index]
 			if _artist == artist and _title == title:
 				del indexes[data_index]
