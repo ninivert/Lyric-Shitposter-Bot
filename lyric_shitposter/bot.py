@@ -188,14 +188,14 @@ def cmd_songs_inline(update, context):
 	indexes = get_chat_var(chat_id, 'indexes')
 
 	if enabled:
-		enabled_songs[artist].remove(title)
-		if len(enabled_songs[artist]) == 0:
-			del enabled_songs[artist]
-
 		for data_index in range(len(indexes)):
 			_artist, _title, _index = indexes[data_index]
 			if _artist == artist and _title == title:
 				del indexes[data_index]
+
+		enabled_songs[artist].remove(title)
+		if len(enabled_songs[artist]) == 0:
+			del enabled_songs[artist]
 
 	else:
 		if artist not in enabled_songs.keys():
