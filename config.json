@@ -2,7 +2,13 @@
 	"chats": {
 		"default": {
 			"threshold": 90,
-			"index": -1,
+			"indexes": [
+				[
+					"CaptainSparklez",
+					"Revenge",
+					-1
+				]
+			],
 			"uses": 0,
 			"enabled_songs": {
 				"CaptainSparklez": [
@@ -11,17 +17,33 @@
 			}
 		},
 		"763391143": {
-			"index": 1,
+			"indexes": [
+				[
+					"Adele",
+					"Hello",
+					2
+				],
+				[
+					"CaptainSparklez",
+					"TNT",
+					1
+				],
+				[
+					"CaptainSparklez",
+					"Revenge",
+					2
+				]
+			],
+			"uses": 3,
 			"enabled_songs": {
 				"CaptainSparklez": [
-					"TNT",
-					"Fallen Kingdom"
+					"Revenge",
+					"TNT"
 				],
 				"Adele": [
 					"Hello"
 				]
-			},
-			"uses": 1
+			}
 		}
 	},
 	"ignored_regex": "(?u)[^\\w\\d]",

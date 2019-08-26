@@ -12,10 +12,12 @@ def get_chat_vars(chat_id):
 
 
 def get_chat_var(chat_id, var):
+	import copy
+
 	if str(chat_id) in config['chats'].keys() and var in config['chats'][str(chat_id)].keys():
 		return config['chats'][str(chat_id)][var]
 	else:
-		return config['chats']['default'][var]
+		return copy.deepcopy(config['chats']['default'][var])
 
 
 def is_song_enabled(chat_id, artist, title):
@@ -72,6 +74,9 @@ def get_songs_markup(chat_id):
 
 
 def set_chat_vars(chat_id, vars_dict):
+	if str(chat_id) not in config['chats'].keys():
+		config['chats'][str(chat_id)] = {}
+
 	config['chats'][str(chat_id)].update(vars_dict)
 	dump(config, 'config.json')
 

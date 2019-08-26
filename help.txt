@@ -3,8 +3,9 @@ Responds to and with lyrics from given songs.
 Commands:
 /start - Starts the song from the beginning
 /next - Display the next lyric
-/stats - Display stats for this conversation, useful for debugging
-/help - Display this message
 /songs - Disable and enable certain songs
+/uses - Diplay the number of times this bot replied
+/debug - Display debug information
+/help - Display list of commands
 
 Bugs and suggestions: @breadplusplus

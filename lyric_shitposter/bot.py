@@ -25,7 +25,8 @@ def bot():
 	help_handler = CommandHandler('help', cmd_help)
 	start_handler = CommandHandler('start', cmd_start)
 	next_handler = CommandHandler('next', cmd_next)
-	stat_handler = CommandHandler('stats', cmd_stats)
+	debug_handler = CommandHandler('debug', cmd_debug)
+	uses_handler = CommandHandler('uses', cmd_uses)
 	songs_handler = CommandHandler('songs', cmd_songs)
 	songs_inline_handler = CallbackQueryHandler(cmd_songs_inline)
 	unknown_handler = MessageHandler(cmd_filter, cmd_unknown)
@@ -33,7 +34,8 @@ def bot():
 	dispatcher.add_handler(help_handler)
 	dispatcher.add_handler(start_handler)
 	dispatcher.add_handler(next_handler)
-	dispatcher.add_handler(stat_handler)
+	dispatcher.add_handler(debug_handler)
+	dispatcher.add_handler(uses_handler)
 	dispatcher.add_handler(songs_handler)
 	dispatcher.add_handler(songs_inline_handler)
 	dispatcher.add_handler(unknown_handler)
@@ -45,14 +47,21 @@ def bot():
 
 def message(update, context):
 	chat = get_chat_vars(update.message.chat_id)
-	lyrics = config['lyrics']['CaptainSparklez']['Revenge']
 
-	next_index = get_next_index(
-		update.message.text,
-		lyrics,
-		start_index=chat['index'],
-		threshold=chat['threshold']
-	)
+	for data_index in range(len(chat['indexes'])):
+		artist, title, index = chat['indexes'][data_index]
+
+		lyrics = config['lyrics'][artist][title]
+
+		next_index = get_next_index(
+			update.message.text,
+			lyrics,
+			start_index=index,
+			threshold=chat['threshold']
+		)
+
+		if next_index > -1:
+			break
 
 	_logger.info(f'Message: "{update.message.text}", next index: {next_index}')
 
@@ -69,10 +78,14 @@ def message(update, context):
 				reply_to_message_id=update.message.message_id,
 				sticker='CAADAQADfkQAAq8ZYgeMKpo3QZgHKRYE'
 			)
-			next_index = config['chats']['default']['index']
+			next_index = -1
+
+		# Move index front
+		chat['indexes'].insert(0, chat['indexes'].pop(data_index))
+		chat['indexes'][0][2] = next_index
 
 		set_chat_vars(update.message.chat_id, {
-			'index': next_index,
+			'indexes': chat['indexes'],
 			'uses': chat['uses'] + 1
 		})
 
@@ -89,16 +102,20 @@ def cmd_help(update, context):
 
 
 def cmd_start(update, context):
-	set_chat_var(update.message.chat_id, 'index', config['chats']['default']['index'])
+	indexes = get_chat_var(update.message.chat_id, 'indexes')
+	indexes[0][2] = -1
+	set_chat_var(update.message.chat_id, 'indexes', indexes)
 	cmd_next(update, context)
 
 
 def cmd_next(update, context):
-	lyrics = config['lyrics']['CaptainSparklez']['Revenge']
-
-	index = get_chat_var(update.message.chat_id, 'index')
+	indexes = get_chat_var(update.message.chat_id, 'indexes')
+	artist, title, index = indexes[0]
+	lyrics = config['lyrics'][artist][title]
 	index = (index + 1) % len(lyrics)
-	set_chat_var(update.message.chat_id, 'index', index)
+	indexes[0][2] = index
+
+	set_chat_var(update.message.chat_id, 'indexes', indexes)
 
 	context.bot.send_message(
 		chat_id=update.message.chat_id,
@@ -107,20 +124,29 @@ def cmd_next(update, context):
 	)
 
 
-def cmd_stats(update, context):
+def cmd_debug(update, context):
+	import json
 	from telegram import ParseMode
 
 	chat = get_chat_vars(update.message.chat_id)
-	stats = f'Here are some stats for chat {update.message.chat_id}:'
-
-	for key, item in chat.items():
-		stats += f'\n`{key}: {item}`'
+	stats = f'Here are some stats for chat {update.message.chat_id}:\n'
+	stats += '<code>'
+	stats += json.dumps(chat, indent='\t')
+	stats += '</code>'
 
 	context.bot.send_message(
 		chat_id=update.message.chat_id,
 		reply_to_message_id=update.message.message_id,
 		text=stats,
-		parse_mode=ParseMode.MARKDOWN
+		parse_mode=ParseMode.HTML
+	)
+
+
+def cmd_uses(update, context):
+	context.bot.send_message(
+		chat_id=update.message.chat_id,
+		reply_to_message_id=update.message.message_id,
+		text=f'I have replied {get_chat_var(update.message.chat_id, "uses")} times !',
 	)
 
 
@@ -142,19 +168,29 @@ def cmd_songs_inline(update, context):
 	import json
 	artist, title, enabled = json.loads(update.callback_query.data)
 	enabled_songs = get_chat_var(chat_id, 'enabled_songs')
+	indexes = get_chat_var(chat_id, 'indexes')
 
 	if enabled:
 		enabled_songs[artist].remove(title)
 		if len(enabled_songs[artist]) == 0:
 			del enabled_songs[artist]
+
+		for data_index in range(len(indexes)):
+			_artist, _title, _index = indexes[data_index]
+			if _artist == artist and _title == title:
+				del indexes[data_index]
+
 	else:
 		if artist not in enabled_songs.keys():
 			enabled_songs[artist] = []
 		enabled_songs[artist].append(title)
 
+		indexes.append([artist, title, -1])
+
 	enabled = not enabled
 
 	set_chat_var(chat_id, 'enabled_songs', enabled_songs)
+	set_chat_var(chat_id, 'indexes', indexes)
 
 	reply_markup = get_songs_markup(chat_id)
 	update_text = f'{title} from {artist} is now {"enabled" if enabled else "disabled"}.'
