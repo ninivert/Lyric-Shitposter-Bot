@@ -5,5 +5,6 @@ Commands:
 /next - Display the next lyric
 /stats - Display stats for this conversation, useful for debugging
 /help - Display this message
+/songs - Disable and enable certain songs
 
 Bugs and suggestions: @breadplusplus

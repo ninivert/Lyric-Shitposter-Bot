@@ -1,16 +1,13 @@
-import json
 import os
 import logging
-from .dump import dump
+from .file import load, dump
 
 _logger = logging.getLogger()
 _logger.setLevel(logging.INFO)
 
 # Load from existing config file
 if os.path.exists('config.json'):
-	with open('config.json') as file:
-		config = json.load(file)
-
+	config = load('config.json')
 	_logger.info('Loaded config.')
 
 # Generate new default config file
@@ -101,6 +98,6 @@ else:
 		}
 	}
 
-	dump(config)
+	dump(config, 'config.json')
 
 	_logger.info('Created new config file.')

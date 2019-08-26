@@ -5,7 +5,7 @@ from .database import *
 
 
 def bot():
-	from telegram.ext import Updater, MessageHandler, CommandHandler, Filters
+	from telegram.ext import Updater, MessageHandler, CommandHandler, Filters, CallbackQueryHandler
 
 	# Setup logger
 	global _logger
@@ -26,12 +26,16 @@ def bot():
 	start_handler = CommandHandler('start', cmd_start)
 	next_handler = CommandHandler('next', cmd_next)
 	stat_handler = CommandHandler('stats', cmd_stats)
+	songs_handler = CommandHandler('songs', cmd_songs)
+	songs_inline_handler = CallbackQueryHandler(cmd_songs_inline)
 	unknown_handler = MessageHandler(cmd_filter, cmd_unknown)
 	dispatcher.add_handler(message_handler)
 	dispatcher.add_handler(help_handler)
 	dispatcher.add_handler(start_handler)
 	dispatcher.add_handler(next_handler)
 	dispatcher.add_handler(stat_handler)
+	dispatcher.add_handler(songs_handler)
+	dispatcher.add_handler(songs_inline_handler)
 	dispatcher.add_handler(unknown_handler)
 
 	# Run bot
@@ -107,7 +111,6 @@ def cmd_stats(update, context):
 	from telegram import ParseMode
 
 	chat = get_chat_vars(update.message.chat_id)
-
 	stats = f'Here are some stats for chat {update.message.chat_id}:'
 
 	for key, item in chat.items():
@@ -118,6 +121,49 @@ def cmd_stats(update, context):
 		reply_to_message_id=update.message.message_id,
 		text=stats,
 		parse_mode=ParseMode.MARKDOWN
+	)
+
+
+def cmd_songs(update, context):
+	reply_markup = get_songs_markup(update.message.chat_id)
+
+	context.bot.send_message(
+		chat_id=update.message.chat_id,
+		reply_to_message_id=update.message.message_id,
+		reply_markup=reply_markup,
+		text='Tap a song to enable or disable it.'
+	)
+
+
+def cmd_songs_inline(update, context):
+	message_id = update.callback_query.message.message_id
+	chat_id = update.callback_query.message.chat.id
+
+	import json
+	artist, title, enabled = json.loads(update.callback_query.data)
+	enabled_songs = get_chat_var(chat_id, 'enabled_songs')
+
+	if enabled:
+		enabled_songs[artist].remove(title)
+		if len(enabled_songs[artist]) == 0:
+			del enabled_songs[artist]
+	else:
+		if artist not in enabled_songs.keys():
+			enabled_songs[artist] = []
+		enabled_songs[artist].append(title)
+
+	enabled = not enabled
+
+	set_chat_var(chat_id, 'enabled_songs', enabled_songs)
+
+	reply_markup = get_songs_markup(chat_id)
+	update_text = f'{title} from {artist} is now {"enabled" if enabled else "disabled"}.'
+
+	context.bot.edit_message_text(
+		chat_id=chat_id,
+		message_id=message_id,
+		text=update_text,
+		reply_markup=reply_markup
 	)
 
 
