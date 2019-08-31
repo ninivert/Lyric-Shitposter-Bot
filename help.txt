@@ -1,12 +1,20 @@
 Responds to and with lyrics from given songs.
 
-Commands:
-/start - Starts the song from the beginning
-/next - Display the next lyric
+Usage:
+/start - Starts the current song from the beginning
+/next - Display the next lyric for current song
+/lyrics - Display full lyrics for current song
 /current - Diplay current songs
-/songs - Disable and enable certain songs
 /uses - Diplay the number of times this bot replied
-/debug - Display debug information
+
+Settings:
+/songs - Disable and enable certain songs
+/reset - Reset all songs to the beginning
+/set_threshold - 0 matches all text, 100 is exact match
+/set_timeout - Time in minutes until a song is reset
+
+Help & debug:
 /help - Display list of commands
+/debug - Display debug information
 
 Bugs and suggestions: @breadplusplus

@@ -2,19 +2,9 @@
 	"chats": {
 		"default": {
 			"threshold": 90,
-			"indexes": [
-				[
-					"CaptainSparklez",
-					"Revenge",
-					-1
-				]
-			],
-			"uses": 0,
-			"enabled_songs": {
-				"CaptainSparklez": [
-					"Revenge"
-				]
-			}
+			"timeout": 10,
+			"songs": [],
+			"uses": 0
 		}
 	},
 	"ignored_regex": "(?u)[^\\w\\d]",
