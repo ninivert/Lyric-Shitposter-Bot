@@ -189,6 +189,7 @@ def cmd_reset(update, context):
 
 	for song in songs:
 		song['index'] = -1
+		song['timestamp'] = 0
 
 	set_chat_var(update.message.chat_id, 'songs', songs)
 
