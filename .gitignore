@@ -2,3 +2,4 @@ token.txt
 Pipfile
 Pipfile.lock
 __pycache__
+add_song.py
