@@ -2,6 +2,7 @@
 
 Responds to and with lyrics from given songs.
 
+```
 Usage:
 /start - Starts the current song from the beginning
 /next - Display the next lyric for current song
@@ -18,6 +19,8 @@ Settings:
 Help & debug:
 /help - Display list of commands
 /debug - Display debug information
+```
 
 Bugs and suggestions: @stupidfkingcat
+
 uwu
