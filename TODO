@@ -1,0 +1,3 @@
+[ ] simplified enabling/disabling songs
+[ ] polling interval
+[ ] move the MICHELFOREVER config from .env to michelforever.ini

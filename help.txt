@@ -4,17 +4,18 @@ Usage:
 /start - Starts the current song from the beginning
 /next - Display the next lyric for current song
 /lyrics - Display full lyrics for current song
-/current - Diplay current songs
+/list - List all the songs
 /uses - Diplay the number of times this bot replied
 
 Settings:
-/songs - Disable and enable certain songs
-/reset - Reset all songs to the beginning
+/reload - Reload all songs from database
+/set_songs - Disable and enable certain songs (WIP)
 /set_threshold - 0 matches all text, 100 is exact match
-/set_timeout - Time in minutes until a song is reset
+/set_timeout - Time in seconds until a song is reset
 
 Help & debug:
 /help - Display list of commands
 /debug - Display debug information
 
-Bugs and suggestions: @breadplusplus
+Bugs and suggestions: @stupidfkingcat
+uwu
