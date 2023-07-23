@@ -1,4 +1,6 @@
-# Lyric Shitposter Bot (Telegram bot)
+# Michel Forever (Telegram bot)
+
+oui c'est moi
 
 Responds to and with lyrics from given songs.
 

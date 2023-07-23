@@ -166,7 +166,6 @@ async def message(update: Optional[object], context: CallbackContext):
 	if isinstance(res, Err):
 		return
 	line, lastline = res.unwrap()
-	print(line, lastline)
 	if not lastline:
 		await send_msg(update, context, line)
 	else:
